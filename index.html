@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3 KAGE VAPE SHOP — Bengkong, Batam</title>
+<meta name="description" content="3 Kage Vape Shop — toko vape di Bengkong Sadai, Kota Batam. Liquid, pod, mod, coil & aksesoris.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0a0b0d;
+    --bg-1:#14161a;
+    --bg-2:#1c1f24;
+    --ember:#ff6a2b;
+    --ember-dim:#c9481a;
+    --vapor:#8fd9ec;
+    --ink:#eae7e0;
+    --ink-dim:#9a9da4;
+    --ink-mute:#767a82;
+    --line: rgba(234,231,224,0.09);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg-0);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--ember); color:#0a0b0d;}
+
+  a{color:inherit; text-decoration:none;}
+
+  /* ---------- canvas smoke layer ---------- */
+  #smoke-canvas{
+    position:fixed; inset:0; width:100%; height:100%;
+    z-index:0; pointer-events:none; opacity:0.55;
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 22px clamp(20px,5vw,64px);
+    backdrop-filter: blur(10px);
+    background: linear-gradient(to bottom, rgba(10,11,13,0.85), rgba(10,11,13,0));
+    transition: background .4s ease;
+  }
+  .logo{
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-weight:900;
+    font-size:20px;
+    letter-spacing:0.08em;
+    display:flex; align-items:baseline; gap:8px;
+  }
+  .logo span.mark{ color:var(--ember); font-family:'Noto Sans JP',sans-serif; font-size:20px;}
+  nav ul{ list-style:none; display:flex; gap:clamp(16px,3vw,36px); font-size:13px; letter-spacing:.03em;}
+  nav a{ color:var(--ink-mute); transition:color .25s ease; position:relative;}
+  nav a:hover{ color:var(--ink);}
+  .nav-mobile-toggle{ display:none; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding: 120px 20px 60px;
+    z-index:2;
+  }
+  .kanji-bg{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    font-family:'Noto Sans JP',sans-serif; font-size: min(70vw, 620px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(234,231,224,0.055);
+    font-weight:700; line-height:1; user-select:none; z-index:0;
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-size:12px; letter-spacing:0.32em; text-transform:uppercase;
+    color:var(--ember); margin-bottom:22px; position:relative; z-index:2;
+    display:flex; align-items:center; gap:12px;
+  }
+  .eyebrow::before, .eyebrow::after{
+    content:''; width:28px; height:1px; background:var(--ember-dim); opacity:.6;
+  }
+  h1.wordmark{
+    position:relative; z-index:2;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-weight:900;
+    font-size: clamp(64px, 15vw, 168px);
+    line-height:0.88;
+    letter-spacing: -0.01em;
+    background: linear-gradient(180deg, #fdfbf7 0%, #eae7e0 45%, #a3958a 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow: 0 40px 80px rgba(255,106,43,0.08);
+  }
+  .hero-sub{
+    position:relative; z-index:2;
+    margin-top:22px; max-width:520px;
+    font-size: clamp(15px,2vw,18px);
+    color:var(--ink-dim); line-height:1.65; font-weight:400;
+  }
+  .hero-sub b{color:var(--ink); font-weight:600;}
+  .hero-cta{
+    position:relative; z-index:2;
+    margin-top:40px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+  }
+  .btn{
+    position:relative; overflow:hidden;
+    padding:15px 30px; border-radius:100px;
+    font-size:13.5px; font-weight:600; letter-spacing:0.02em;
+    display:inline-flex; align-items:center; gap:9px;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1);
+    cursor:pointer; border:1px solid transparent;
+  }
+  .btn-primary{ background:var(--ember); color:#170a04;}
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 34px -8px rgba(255,106,43,0.55);}
+  .btn-ghost{ border-color:var(--line); color:var(--ink); backdrop-filter:blur(6px); background:rgba(255,255,255,0.02);}
+  .btn-ghost:hover{ border-color:rgba(234,231,224,0.35); transform:translateY(-3px);}
+
+  .rating-chip{
+    position:relative; z-index:2; margin-top:46px;
+    display:inline-flex; align-items:center; gap:10px;
+    padding:9px 18px; border:1px solid var(--line); border-radius:100px;
+    font-size:12.5px; color:var(--ink-dim); background:rgba(255,255,255,0.02);
+  }
+  .stars{ color:var(--ember); letter-spacing:2px; font-size:13px;}
+
+  .scroll-cue{
+    position:absolute; bottom:34px; left:50%; transform:translateX(-50%);
+    width:1px; height:52px; background:linear-gradient(to bottom, transparent, var(--ink-mute) 40%, transparent);
+    z-index:2; overflow:hidden;
+  }
+  .scroll-cue::after{
+    content:''; position:absolute; top:-52px; left:0; width:100%; height:100%;
+    background:linear-gradient(to bottom, transparent, var(--ember), transparent);
+    animation: cue-fall 2.2s ease-in-out infinite;
+  }
+  @keyframes cue-fall{ to{ top:52px; } }
+
+  /* ---------- sections shared ---------- */
+  section{ position:relative; z-index:2; padding: 120px clamp(20px,6vw,64px); }
+  .section-head{ max-width:640px; margin-bottom:60px; }
+  .tag{ font-size:12px; letter-spacing:0.28em; text-transform:uppercase; color:var(--ember); margin-bottom:16px; display:block;}
+  h2{
+    font-family:'Zen Kaku Gothic New', sans-serif; font-weight:700;
+    font-size: clamp(30px,4.4vw,50px); line-height:1.08; letter-spacing:-0.01em;
+  }
+  .section-head p{ margin-top:18px; color:var(--ink-dim); font-size:15.5px; line-height:1.7; max-width:520px;}
+
+  .reveal{ opacity:0; transform:translateY(28px); transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in{ opacity:1; transform:translateY(0);}
+
+  /* ---------- about ---------- */
+  .about-wrap{ display:grid; grid-template-columns: 0.9fr 1.1fr; gap:64px; align-items:start;}
+  .about-figure{
+    position:relative; aspect-ratio:4/5; border-radius:18px; overflow:hidden;
+    background: radial-gradient(circle at 30% 20%, rgba(255,106,43,0.18), transparent 60%), var(--bg-1);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .about-figure .kanji-small{
+    font-family:'Noto Sans JP',sans-serif; font-size:220px; font-weight:700;
+    color:transparent; -webkit-text-stroke:1px rgba(255,106,43,0.35);
+  }
+  .about-text p{ color:var(--ink-dim); font-size:15.5px; line-height:1.85; margin-bottom:18px;}
+  .about-text p:first-child{ color:var(--ink); font-size:19px; line-height:1.6; font-weight:500;}
+  .about-stats{ display:flex; gap:40px; margin-top:36px; padding-top:32px; border-top:1px solid var(--line); flex-wrap:wrap;}
+  .stat b{ display:block; font-family:'Zen Kaku Gothic New',sans-serif; font-size:34px; color:var(--ember); font-weight:700;}
+  .stat span{ font-size:12.5px; color:var(--ink-mute); letter-spacing:.03em;}
+
+  /* ---------- categories ---------- */
+  .cat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:20px; overflow:hidden;}
+  .cat-card{
+    background:var(--bg-1); padding:44px 32px; position:relative; overflow:hidden;
+    transition: background .4s ease; min-height:280px; display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .cat-card:hover{ background:var(--bg-2); }
+  .cat-num{ font-size:12px; color:var(--ink-mute); letter-spacing:.1em;}
+  .cat-glyph{
+    font-family:'Noto Sans JP',sans-serif; font-size:64px; font-weight:700; color:transparent;
+    -webkit-text-stroke:1px rgba(143,217,236,0.4); align-self:flex-end;
+    transition: -webkit-text-stroke .4s ease, transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .cat-card:hover .cat-glyph{ -webkit-text-stroke:1px rgba(255,106,43,0.6); transform:translateY(-6px);}
+  .cat-card h3{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:22px; font-weight:700; margin-top:20px;}
+  .cat-card p{ color:var(--ink-mute); font-size:13.5px; margin-top:10px; line-height:1.6;}
+
+  /* ---------- testimonial / rating band ---------- */
+  .rating-band{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:32px;
+    padding:56px clamp(24px,6vw,72px); border-radius:22px;
+    background: linear-gradient(135deg, rgba(255,106,43,0.10), rgba(143,217,236,0.05));
+    border:1px solid var(--line);
+  }
+  .rating-band .big-num{
+    font-family:'Zen Kaku Gothic New',sans-serif; font-size:88px; font-weight:900; line-height:1;
+    background:linear-gradient(180deg,#fff,#c9481a); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .rating-band .stars{ font-size:20px; margin-top:8px; display:block;}
+  .rating-band .rb-text{ max-width:380px; color:var(--ink-dim); font-size:14.5px; line-height:1.7;}
+  .rating-band .rb-text b{ color:var(--ink); display:block; font-size:15px; margin-bottom:6px;}
+
+  /* ---------- location ---------- */
+  .loc-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:20px; overflow:hidden;}
+  .loc-info{ background:var(--bg-1); padding:48px; display:flex; flex-direction:column; gap:26px; justify-content:center;}
+  .loc-row{ display:flex; gap:18px; align-items:flex-start;}
+  .loc-icon{
+    width:38px; height:38px; border-radius:10px; background:rgba(255,106,43,0.12); color:var(--ember);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px;
+  }
+  .loc-row h4{ font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-mute); margin-bottom:6px; font-weight:600;}
+  .loc-row p, .loc-row a{ font-size:15px; color:var(--ink); line-height:1.6;}
+  .loc-row a:hover{ color:var(--ember);}
+  .map-embed{ position:relative; min-height:340px; background:var(--bg-2);}
+  .map-embed iframe{ width:100%; height:100%; min-height:340px; border:0; filter:grayscale(0.4) invert(0.92) contrast(0.88);}
+
+  /* ---------- footer ---------- */
+  footer{
+    position:relative; z-index:2; padding:48px clamp(20px,6vw,64px) 36px;
+    border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:16px;
+  }
+  footer .fmark{ font-family:'Zen Kaku Gothic New',sans-serif; font-weight:900; font-size:15px; letter-spacing:.06em;}
+  footer .fmark span{ color:var(--ember);}
+  footer p{ font-size:12.5px; color:var(--ink-mute);}
+  .footer-links{ display:flex; gap:22px; font-size:12.5px; color:var(--ink-mute);}
+  .footer-links a:hover{ color:var(--ink);}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:860px){
+    nav ul{ display:none; }
+    .about-wrap, .loc-wrap{ grid-template-columns:1fr; }
+    .cat-grid{ grid-template-columns:1fr; }
+    .rating-band{ flex-direction:column; text-align:center; align-items:center;}
+    .rating-band .rb-text{ text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="smoke-canvas"></canvas>
+
+<header>
+  <div class="logo"><span class="mark">影</span>KAGE VAPE</div>
+  <nav>
+    <ul>
+      <li><a href="#tentang">Tentang</a></li>
+      <li><a href="#produk">Produk</a></li>
+      <li><a href="#lokasi">Lokasi</a></li>
+      <li><a href="https://wa.me/6282374246663" target="_blank" rel="noopener">WhatsApp</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="kanji-bg">影</div>
+    <div class="eyebrow">Bengkong Sadai · Kota Batam</div>
+    <h1 class="wordmark">KAGE</h1>
+    <p class="hero-sub">Uap lahir dari bayangan. <b>3 Kage Vape Shop</b> menyediakan liquid, pod, mod, hingga coil &amp; aksesoris — untuk yang serius soal rasa dan asap.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://wa.me/6282374246663" target="_blank" rel="noopener">Chat via WhatsApp →</a>
+      <a class="btn btn-ghost" href="#lokasi">Lihat Lokasi</a>
+    </div>
+    <div class="rating-chip"><span class="stars">★★★★★</span> 5.0 dari ulasan Google</div>
+    <div class="scroll-cue"></div>
+  </section>
+
+  <section id="tentang">
+    <div class="about-wrap">
+      <div class="about-figure reveal">
+        <div class="kanji-small">煙</div>
+      </div>
+      <div class="about-text">
+        <p class="reveal">Kage berarti "bayangan" — tempat asap berkumpul sebelum menghilang. Filosofi itu yang kami bawa ke toko ini.</p>
+        <p class="reveal">3 Kage Vape Shop adalah toko vape lokal di kawasan Bengkong, Batam, melayani pelanggan yang mencari liquid berkualitas, perangkat pod &amp; mod, serta coil dan aksesoris pendukung. Kami percaya urusan vape adalah urusan detail — dari resistensi coil sampai karakter rasa liquid.</p>
+        <p class="reveal">Datang langsung, tanya-tanya dulu juga boleh. Tim kami siap bantu cari yang paling cocok dengan gaya ngevape kamu.</p>
+        <div class="about-stats reveal">
+          <div class="stat"><b>5.0</b><span>Rating Google</span></div>
+          <div class="stat"><b>10.00</b><span>Buka Setiap Hari</span></div>
+          <div class="stat"><b>影</b><span>Sejak Bengkong Sadai</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="produk">
+    <div class="section-head reveal">
+      <span class="tag">Kategori</span>
+      <h2>Apa yang kami sediakan</h2>
+      <p>Tiga kategori inti — tanya tim kami untuk stok dan rekomendasi rasa terbaru.</p>
+    </div>
+    <div class="cat-grid reveal">
+      <div class="cat-card">
+        <span class="cat-num">01</span>
+        <span class="cat-glyph">液</span>
+        <h3>Liquid</h3>
+        <p>Beragam rasa dan kadar nikotin, dari freebase sampai saltnic.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-num">02</span>
+        <span class="cat-glyph">器</span>
+        <h3>Pod &amp; Mod</h3>
+        <p>Perangkat untuk pemula sampai yang sudah terbiasa custom setup.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-num">03</span>
+        <span class="cat-glyph">芯</span>
+        <h3>Coil &amp; Aksesoris</h3>
+        <p>Kebutuhan pendukung — coil pengganti, kapas, tank, dan lainnya.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="rating-band reveal">
+      <div>
+        <span class="big-num">5.0</span>
+        <span class="stars">★★★★★</span>
+      </div>
+      <div class="rb-text">
+        <b>Dipercaya pelanggan di Batam</b>
+        Rating 5.0 berdasarkan ulasan Google. Cek dan tinggalkan ulasanmu setelah mampir ke toko.
+      </div>
+      <a class="btn btn-ghost" href="https://www.google.com/search?q=3+kage+vape" target="_blank" rel="noopener">Lihat di Google →</a>
+    </div>
+  </section>
+
+  <section id="lokasi">
+    <div class="section-head reveal">
+      <span class="tag">Kunjungi</span>
+      <h2>Lokasi &amp; kontak</h2>
+    </div>
+    <div class="loc-wrap reveal">
+      <div class="loc-info">
+        <div class="loc-row">
+          <div class="loc-icon">⌖</div>
+          <div>
+            <h4>Alamat</h4>
+            <p>Blok 6B Nomor 10B, Jl. Bengkong Kolam No. RT.04, RW.09, Sadai, Kec. Bengkong, Kota Batam, Kepulauan Riau 29444</p>
+          </div>
+        </div>
+        <div class="loc-row">
+          <div class="loc-icon">☎</div>
+          <div>
+            <h4>Telepon / WhatsApp</h4>
+            <a href="https://wa.me/6282374246663" target="_blank" rel="noopener">0823-7424-6663</a>
+          </div>
+        </div>
+        <div class="loc-row">
+          <div class="loc-icon">⏱</div>
+          <div>
+            <h4>Jam Buka</h4>
+            <p>Buka mulai pukul 10.00 — hubungi kami langsung untuk memastikan jam tutup hari ini.</p>
+          </div>
+        </div>
+        <a class="btn btn-primary" style="align-self:flex-start" href="https://www.google.com/maps/search/?api=1&query=3+Kage+Vape+Shop+Bengkong+Batam" target="_blank" rel="noopener">Buka di Google Maps →</a>
+      </div>
+      <div class="map-embed">
+        <iframe
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps?q=Blok+6B+Nomor+10B,+Jl.+Bengkong+Kolam,+Sadai,+Kec.+Bengkong,+Kota+Batam,+Kepulauan+Riau+29444&output=embed">
+        </iframe>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="fmark"><span>影</span> KAGE VAPE SHOP</div>
+  <p>© 2026 3 Kage Vape Shop · Bengkong, Batam</p>
+  <div class="footer-links">
+    <a href="https://wa.me/6282374246663" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="#tentang">Tentang</a>
+    <a href="#lokasi">Lokasi</a>
+  </div>
+</footer>
+
+<script>
+  // ---- scroll reveal ----
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold:0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // ---- header bg on scroll ----
+  const header = document.querySelector('header');
+  window.addEventListener('scroll', ()=>{
+    header.style.background = window.scrollY > 40
+      ? 'linear-gradient(to bottom, rgba(10,11,13,0.92), rgba(10,11,13,0.6))'
+      : 'linear-gradient(to bottom, rgba(10,11,13,0.85), rgba(10,11,13,0))';
+  });
+
+  // ---- ambient smoke canvas ----
+  const canvas = document.getElementById('smoke-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, DPR;
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio||1, 2);
+    W = canvas.width = window.innerWidth * DPR;
+    H = canvas.height = window.innerHeight * DPR;
+    canvas.style.width = window.innerWidth+'px';
+    canvas.style.height = window.innerHeight+'px';
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function makeParticle(){
+    return {
+      x: Math.random()*W,
+      y: H + Math.random()*200*DPR,
+      r: (60 + Math.random()*140)*DPR,
+      speed: (0.15 + Math.random()*0.35)*DPR,
+      drift: (Math.random()-0.5)*0.3*DPR,
+      alpha: 0.02 + Math.random()*0.05,
+      hue: Math.random() > 0.75 ? 'vapor' : 'ember'
+    };
+  }
+  const particles = Array.from({length: 16}, makeParticle);
+
+  function drawParticle(p){
+    const color = p.hue === 'vapor' ? '143,217,236' : '255,106,43';
+    const grad = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+    grad.addColorStop(0, `rgba(${color},${p.alpha})`);
+    grad.addColorStop(1, `rgba(${color},0)`);
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      p.y -= p.speed;
+      p.x += p.drift + Math.sin(p.y*0.002)*0.3*DPR;
+      if(p.y < -p.r){ Object.assign(p, makeParticle(), {y: H + p.r}); }
+      drawParticle(p);
+    });
+    if(!prefersReducedMotion){ requestAnimationFrame(tick); }
+  }
+  if(!prefersReducedMotion){ tick(); } else { drawParticle && particles.forEach(drawParticle); }
+
+  // ---- magnetic buttons ----
+  document.querySelectorAll('.btn').forEach(btn=>{
+    btn.addEventListener('mousemove', (e)=>{
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width/2;
+      const y = e.clientY - rect.top - rect.height/2;
+      btn.style.transform = `translate(${x*0.18}px, ${y*0.35}px)`;
+    });
+    btn.addEventListener('mouseleave', ()=>{ btn.style.transform = ''; });
+  });
+</script>
+
+</body>
+</html>
