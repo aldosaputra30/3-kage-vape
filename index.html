@@ -188,6 +188,53 @@
   .cat-card h3{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:22px; font-weight:700; margin-top:20px;}
   .cat-card p{ color:var(--ink-mute); font-size:13.5px; margin-top:10px; line-height:1.6;}
 
+  /* ---------- etalase (product showcase) ---------- */
+  .etalase-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:60px;}
+  .etalase-filters{ display:flex; gap:10px; flex-wrap:wrap;}
+  .filter-chip{
+    padding:9px 18px; border-radius:100px; font-size:12.5px; letter-spacing:.02em;
+    border:1px solid var(--line); color:var(--ink-mute); background:rgba(255,255,255,0.02);
+    cursor:pointer; transition:all .3s ease; user-select:none;
+  }
+  .filter-chip:hover{ color:var(--ink); border-color:rgba(234,231,224,0.3);}
+  .filter-chip.active{ background:var(--ember); color:#170a04; border-color:var(--ember); font-weight:600;}
+
+  .etalase-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .etalase-item{ display:none; }
+  .etalase-item.show{ display:block; }
+  .product-card{
+    position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--line);
+    background:var(--bg-1); transition:transform .45s cubic-bezier(.2,.8,.2,1), border-color .3s ease;
+  }
+  .product-card:hover{ transform:translateY(-6px); border-color:rgba(255,106,43,0.35);}
+  .product-media{
+    position:relative; aspect-ratio:1/1; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .product-media .pm-glyph{
+    font-family:'Noto Sans JP',sans-serif; font-weight:700; font-size:96px;
+    color:transparent; -webkit-text-stroke:1px rgba(255,106,43,0.4);
+    transition:transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .product-card:hover .pm-glyph{ transform:scale(1.08) rotate(-3deg); -webkit-text-stroke:1px rgba(255,106,43,0.7);}
+  .product-media img{ width:100%; height:100%; object-fit:cover; display:block;}
+  .product-badge{
+    position:absolute; top:12px; left:12px; z-index:2;
+    padding:5px 12px; border-radius:100px; font-size:10.5px; font-weight:700; letter-spacing:.04em;
+    background:rgba(10,11,13,0.75); backdrop-filter:blur(6px); color:var(--ember); border:1px solid rgba(255,106,43,0.3);
+  }
+  .product-body{ padding:18px 18px 20px; border-top:1px solid var(--line);}
+  .product-cat{ font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-mute); margin-bottom:6px;}
+  .product-name{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:16px; font-weight:700; line-height:1.3;}
+  .product-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:14px;}
+  .product-price{ font-size:14px; font-weight:600; color:var(--vapor);}
+  .product-cta{
+    width:32px; height:32px; border-radius:50%; background:rgba(255,106,43,0.12); color:var(--ember);
+    display:flex; align-items:center; justify-content:center; font-size:14px; transition:all .3s ease;
+  }
+  .product-card:hover .product-cta{ background:var(--ember); color:#170a04;}
+  .etalase-more{ text-align:center; margin-top:52px;}
+
   /* ---------- testimonial / rating band ---------- */
   .rating-band{
     display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:32px;
@@ -230,12 +277,20 @@
   .footer-links a:hover{ color:var(--ink);}
 
   /* ---------- responsive ---------- */
+  @media (max-width:980px){
+    .etalase-grid{ grid-template-columns:repeat(2,1fr); }
+  }
   @media (max-width:860px){
     nav ul{ display:none; }
     .about-wrap, .loc-wrap{ grid-template-columns:1fr; }
     .cat-grid{ grid-template-columns:1fr; }
     .rating-band{ flex-direction:column; text-align:center; align-items:center;}
     .rating-band .rb-text{ text-align:center; }
+    .etalase-head{ flex-direction:column; align-items:flex-start;}
+  }
+  @media (max-width:520px){
+    .etalase-grid{ grid-template-columns:1fr 1fr; gap:12px;}
+    .product-media .pm-glyph{ font-size:64px; }
   }
 </style>
 </head>
@@ -244,11 +299,12 @@
 <canvas id="smoke-canvas"></canvas>
 
 <header>
-  <div class="logo"><span class="mark">影</span>3 KAGE VAPE</div>
+  <div class="logo"><span class="mark">影</span>KAGE VAPE</div>
   <nav>
     <ul>
       <li><a href="#tentang">Tentang</a></li>
       <li><a href="#produk">Produk</a></li>
+      <li><a href="#etalase">Etalase</a></li>
       <li><a href="#lokasi">Lokasi</a></li>
       <li><a href="https://wa.me/6282374246663" target="_blank" rel="noopener">WhatsApp</a></li>
     </ul>
@@ -260,7 +316,6 @@
     <div class="kanji-bg">影</div>
     <div class="eyebrow">Bengkong Sadai · Kota Batam</div>
     <h1 class="wordmark">3 KAGE</h1>
-    <!-- <p class="hero-sub">Uap lahir dari bayangan. <b>3 Kage Vape Shop</b> menyediakan liquid, pod, mod, hingga coil &amp; aksesoris — untuk yang serius soal rasa dan asap.</p> -->
     <div class="hero-cta">
       <a class="btn btn-primary" href="https://wa.me/6282374246663" target="_blank" rel="noopener">Chat via WhatsApp →</a>
       <a class="btn btn-ghost" href="#lokasi">Lihat Lokasi</a>
@@ -312,6 +367,118 @@
         <h3>Coil &amp; Aksesoris</h3>
         <p>Kebutuhan pendukung — coil pengganti, kapas, tank, dan lainnya.</p>
       </div>
+    </div>
+  </section>
+
+  <section id="etalase">
+    <div class="etalase-head reveal">
+      <div class="section-head" style="margin-bottom:0;">
+        <span class="tag">Etalase</span>
+        <h2>Produk pilihan toko</h2>
+        <p>Beberapa item yang paling sering dicari. Foto &amp; stok bisa berubah — konfirmasi via WhatsApp untuk kepastian.</p>
+      </div>
+      <div class="etalase-filters" id="etalaseFilters">
+        <span class="filter-chip active" data-filter="all">Semua</span>
+        <span class="filter-chip" data-filter="liquid">Liquid</span>
+        <span class="filter-chip" data-filter="device">Pod &amp; Mod</span>
+        <span class="filter-chip" data-filter="parts">Coil &amp; Aksesoris</span>
+      </div>
+    </div>
+
+    <div class="etalase-grid" id="etalaseGrid">
+
+      <div class="etalase-item show" data-cat="liquid">
+        <div class="product-card">
+          <div class="product-media"><span class="product-badge">Best Seller</span><span class="pm-glyph">液</span></div>
+          <div class="product-body">
+            <div class="product-cat">Liquid · Saltnic</div>
+            <div class="product-name">Saltnic Series 30ml</div>
+            <div class="product-foot"><span class="product-price">Hubungi kami</span><span class="product-cta">→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="etalase-item show" data-cat="liquid">
+        <div class="product-card">
+          <div class="product-media"><span class="pm-glyph">液</span></div>
+          <div class="product-body">
+            <div class="product-cat">Liquid · Freebase</div>
+            <div class="product-name">Freebase Series 60ml</div>
+            <div class="product-foot"><span class="product-price">Hubungi kami</span><span class="product-cta">→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="etalase-item show" data-cat="device">
+        <div class="product-card">
+          <div class="product-media"><span class="product-badge">Populer</span><span class="pm-glyph">器</span></div>
+          <div class="product-body">
+            <div class="product-cat">Pod System</div>
+            <div class="product-name">Pod Kit Pemula</div>
+            <div class="product-foot"><span class="product-price">Hubungi kami</span><span class="product-cta">→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="etalase-item show" data-cat="device">
+        <div class="product-card">
+          <div class="product-media"><span class="pm-glyph">器</span></div>
+          <div class="product-body">
+            <div class="product-cat">Mod / Box Mod</div>
+            <div class="product-name">Box Mod Custom Setup</div>
+            <div class="product-foot"><span class="product-price">Hubungi kami</span><span class="product-cta">→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="etalase-item show" data-cat="parts">
+        <div class="product-card">
+          <div class="product-media"><span class="pm-glyph">芯</span></div>
+          <div class="product-body">
+            <div class="product-cat">Coil</div>
+            <div class="product-name">Coil Pengganti (Pack)</div>
+            <div class="product-foot"><span class="product-price">Hubungi kami</span><span class="product-cta">→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="etalase-item show" data-cat="parts">
+        <div class="product-card">
+          <div class="product-media"><span class="pm-glyph">芯</span></div>
+          <div class="product-body">
+            <div class="product-cat">Aksesoris</div>
+            <div class="product-name">Tank &amp; Kapas Kit</div>
+            <div class="product-foot"><span class="product-price">Hubungi kami</span><span class="product-cta">→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="etalase-item show" data-cat="liquid">
+        <div class="product-card">
+          <div class="product-media"><span class="pm-glyph">液</span></div>
+          <div class="product-body">
+            <div class="product-cat">Liquid · Saltnic</div>
+            <div class="product-name">Saltnic Rasa Baru</div>
+            <div class="product-foot"><span class="product-price">Hubungi kami</span><span class="product-cta">→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="etalase-item show" data-cat="device">
+        <div class="product-card">
+          <div class="product-media"><span class="pm-glyph">器</span></div>
+          <div class="product-body">
+            <div class="product-cat">Pod System</div>
+            <div class="product-name">Pod Kit Refillable</div>
+            <div class="product-foot"><span class="product-price">Hubungi kami</span><span class="product-cta">→</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="etalase-more reveal">
+      <a class="btn btn-ghost" href="https://wa.me/6282374246663" target="_blank" rel="noopener">Tanya Stok &amp; Harga Lengkap →</a>
     </div>
   </section>
 
@@ -396,6 +563,21 @@
     header.style.background = window.scrollY > 40
       ? 'linear-gradient(to bottom, rgba(10,11,13,0.92), rgba(10,11,13,0.6))'
       : 'linear-gradient(to bottom, rgba(10,11,13,0.85), rgba(10,11,13,0))';
+  });
+
+  // ---- etalase filter ----
+  const filterChips = document.querySelectorAll('.filter-chip');
+  const etalaseItems = document.querySelectorAll('.etalase-item');
+  filterChips.forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      filterChips.forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      const f = chip.dataset.filter;
+      etalaseItems.forEach(item=>{
+        const match = f === 'all' || item.dataset.cat === f;
+        item.classList.toggle('show', match);
+      });
+    });
   });
 
   // ---- ambient smoke canvas ----
